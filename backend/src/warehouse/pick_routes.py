@@ -12,6 +12,10 @@ class NewPicklist(BaseModel):
     approval_id: int = Field(gt=0)
 
 
+class SwapLot(BaseModel):
+    lot_id: int = Field(gt=0)
+
+
 @router.get('')
 def list_picklists(_user=Depends(current_user)):
     return picklists.list_board()
@@ -25,6 +29,11 @@ def reserve(data: NewPicklist, user=Depends(shift)):
 @router.put('/{pick_id}/pack')
 def pack(pick_id: int, user=Depends(shift)):
     return picklists.pack(pick_id, user['sub'])
+
+
+@router.put('/{pick_id}/swap')
+def swap(pick_id: int, data: SwapLot, user=Depends(shift)):
+    return picklists.swap_recalled_lot(pick_id, data.lot_id, user['sub'])
 
 
 @router.put('/{pick_id}/cancel')
